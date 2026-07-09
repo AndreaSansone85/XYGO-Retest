@@ -22,7 +22,7 @@
 const {useState} = React;
 
 /* ── WEBHOOK ─────────────────────────────────────────────────── */
-const WEBHOOK = "https://script.google.com/macros/s/AKfycbwkzWqXwJ9qG1BNLLI1UHhgp58l9BgIQQHgks88NkCqONfFscjceWcPt-_j6MM1A8c3uA/exec";
+const WEBHOOK = "https://script.google.com/macros/s/AKfycbwNt-iBv9Qv_R_WRuHaN1q0wQsNWUUAfQxpBjLU3gbMXWo8a2buTQJWKPsTXvFzGmiENA/exec";
 
 /* ── PALETTE ─────────────────────────────────────────────────── */
 const T  = "#4da8a4";
@@ -142,6 +142,11 @@ const L = {
     doneCopyBtn:"Copy",
     doneCopied:"✓ Copied!",
     doneSubT2:"Your second response has been recorded. Thank you for participating in both sessions.",
+    emailOptLabel:"Would you like a reminder in 10 days to complete the second session?",
+    emailOptPh:"Your email address (optional)",
+    emailOptHint:"Your email will be stored separately from your responses and deleted immediately after the reminder is sent.",
+    emailOptBtn:"Send me a reminder",
+    emailOptSent:"✓ Reminder scheduled!",
   },
   it: {
     roseTitle:"XYGO", roseSub:"ROSA DEI VENTI",
@@ -222,6 +227,11 @@ const L = {
     doneCopyBtn:"Copia",
     doneCopied:"✓ Copiato!",
     doneSubT2:"La tua seconda risposta è stata registrata. Grazie per aver partecipato a entrambe le sessioni.",
+    emailOptLabel:"Vuoi ricevere un promemoria tra 10 giorni per completare la seconda sessione?",
+    emailOptPh:"Il tuo indirizzo email (facoltativo)",
+    emailOptHint:"La tua email sarà conservata separatamente dai tuoi dati e cancellata immediatamente dopo l’invio del promemoria.",
+    emailOptBtn:"Inviami un promemoria",
+    emailOptSent:"✓ Promemoria programmato!",
   }
 };
 
@@ -641,6 +651,8 @@ function App() {
   const [participantToken, setParticipantToken] = useState(""); // token inserito da utente T2
   const [generatedToken,   setGeneratedToken]   = useState(""); // token generato a fine T1
   const [copied,    setCopied]    = useState(false);
+  const [reminderEmail, setReminderEmail] = useState("");
+  const [emailSent,     setEmailSent]     = useState(false);
   const [consent,   setConsent]   = useState(false);
   const [sex,       setSex]       = useState(null);
   const [age,       setAge]       = useState("");
@@ -668,6 +680,7 @@ function App() {
   const reset = () => {
     setPhase("intro"); setConsent(false); setSex(null); setTimepoint("");
     setParticipantToken(""); setGeneratedToken(""); setCopied(false);
+    setReminderEmail(""); setEmailSent(false);
     setAge(""); setGenderLbl(""); setOrientLbl("");
     setGVals([]); setFluidG(false); setOVals([]); setFluidO(false);
     setBusy(false); setErrMsg("");
@@ -679,6 +692,25 @@ function App() {
   const canSubmit = !!(timepoint && tokenOk && sex && ageValid && gVals.length > 0 && oVals.length > 0 && genderLbl && orientLbl);
 
   
+
+  /* Invia la richiesta di reminder (chiamata separata, post-submit) */
+  const sendReminderEmail = async () => {
+    if (!reminderEmail.trim() || emailSent) return;
+    try {
+      await fetch(WEBHOOK, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({
+          action:    "reminder",
+          token:     generatedToken,
+          email:     reminderEmail.trim(),
+          timestamp: new Date().toISOString(),
+          lang,
+        })
+      });
+      setEmailSent(true);
+    } catch (_) { /* silenzioso: il dato principale è già salvato */ }
+  };
 
   const submit = async () => {
     if (!canSubmit || busy) return;
@@ -1081,6 +1113,49 @@ function App() {
             </button>
             <p style={{ fontSize: 12, color: "#9a7a1a", lineHeight: 1.55, margin: 0 }}>
               {t.doneTokenInstr}
+            </p>
+          </div>
+        )}
+
+        {/* Email reminder opzionale — solo T1 */}
+        {timepoint === "T1" && generatedToken && (
+          <div style={{
+            background: "white", borderRadius: 14,
+            padding: "18px 20px", marginBottom: 22,
+            border: `1.5px solid ${TL}`
+          }}>
+            <div style={{ fontSize: 13, color: "#6a8a89", fontWeight: "600", marginBottom: 10 }}>
+              📧 {t.emailOptLabel}
+            </div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+              <input
+                type="email"
+                value={reminderEmail}
+                onChange={e => setReminderEmail(e.target.value)}
+                placeholder={t.emailOptPh}
+                disabled={emailSent}
+                style={{
+                  flex: 1, padding: "10px 13px",
+                  border: `1.5px solid ${emailSent ? "#c8dede" : TD}`,
+                  borderRadius: 9, fontSize: 13, outline: "none",
+                  fontFamily: "'DM Sans', sans-serif",
+                  color: emailSent ? "#9ab" : "#333",
+                  background: emailSent ? "#f0f5f5" : "white"
+                }}
+              />
+              <button
+                onClick={sendReminderEmail}
+                disabled={!reminderEmail.trim() || emailSent}
+                style={Btn(
+                  emailSent ? "#4da84a" : (reminderEmail.trim() ? TD : "#c8dede"),
+                  "white",
+                  { padding: "10px 16px", fontSize: 12, whiteSpace: "nowrap", flexShrink: 0 }
+                )}>
+                {emailSent ? t.emailOptSent : t.emailOptBtn}
+              </button>
+            </div>
+            <p style={{ fontSize: 11, color: "#9ab", lineHeight: 1.55, margin: 0 }}>
+              🔒 {t.emailOptHint}
             </p>
           </div>
         )}
