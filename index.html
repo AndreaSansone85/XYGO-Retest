@@ -26,7 +26,7 @@ const {useState} = React;
    xygo_validation_webhook.gs (NON quello di xygo_windrose).
    Distribuisci → Nuova distribuzione → App Web → Chiunque (anonimo)
 ─────────────────────────────────────────────────────────────── */
-const WEBHOOK = "https://script.google.com/macros/s/AKfycbzmefYdJObrpmUv5G2Vr5fsFDvSttXKoD_YyYhyfmqDA3nJHKI4UZ9eVT4h3l5oVuSxFg/exec";
+const WEBHOOK = "https://script.google.com/macros/s/AKfycbzNwyj8ONLesold90yoefpwyV3W1UISreOsqQZ2jmVEUxqfrTx2nIiyi0ZR4g57VJU6hw/exec";
 
 /* ── PALETTE ─────────────────────────────────────────────────── */
 const T  = "#4da8a4";
@@ -997,12 +997,6 @@ function App() {
           {t.genderDesc}
         </p>
 
-        {/* Scale endpoint labels above/below the SVG for orientation */}
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, padding: "0 8px" }}>
-          <span style={{ fontSize: 11, color: "#8aabaa", fontWeight: 500 }}>{t.genderLeft}</span>
-          <span style={{ fontSize: 11, color: "#8aabaa", fontWeight: 500, textAlign: "right" }}>{t.genderRight}</span>
-        </div>
-
         <GenderScaleSVG
           vals={gVals} fluid={fluidG}
           onChange={setGVals}
@@ -1131,33 +1125,32 @@ function App() {
             <div style={{ fontSize: 13, color: "#6a8a89", fontWeight: "600", marginBottom: 10 }}>
               📧 {t.emailOptLabel}
             </div>
-            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-              <input
-                type="email"
-                value={reminderEmail}
-                onChange={e => setReminderEmail(e.target.value)}
-                placeholder={t.emailOptPh}
-                disabled={emailSent}
-                style={{
-                  flex: 1, padding: "10px 13px",
-                  border: `1.5px solid ${emailSent ? "#c8dede" : TD}`,
-                  borderRadius: 9, fontSize: 13, outline: "none",
-                  fontFamily: "'DM Sans', sans-serif",
-                  color: emailSent ? "#9ab" : "#333",
-                  background: emailSent ? "#f0f5f5" : "white"
-                }}
-              />
-              <button
-                onClick={sendReminderEmail}
-                disabled={!reminderEmail.trim() || emailSent}
-                style={Btn(
-                  emailSent ? "#4da84a" : (reminderEmail.trim() ? TD : "#c8dede"),
-                  "white",
-                  { padding: "10px 16px", fontSize: 12, whiteSpace: "nowrap", flexShrink: 0 }
-                )}>
-                {emailSent ? t.emailOptSent : t.emailOptBtn}
-              </button>
-            </div>
+            <input
+              type="email"
+              value={reminderEmail}
+              onChange={e => setReminderEmail(e.target.value)}
+              placeholder={t.emailOptPh}
+              disabled={emailSent}
+              style={{
+                width: "100%", padding: "10px 13px", marginBottom: 8,
+                border: `1.5px solid ${emailSent ? "#c8dede" : TD}`,
+                borderRadius: 9, fontSize: 13, outline: "none",
+                fontFamily: "'DM Sans', sans-serif",
+                color: emailSent ? "#9ab" : "#333",
+                background: emailSent ? "#f0f5f5" : "white",
+                boxSizing: "border-box"
+              }}
+            />
+            <button
+              onClick={sendReminderEmail}
+              disabled={!reminderEmail.trim() || emailSent}
+              style={Btn(
+                emailSent ? "#4da84a" : (reminderEmail.trim() ? TD : "#c8dede"),
+                "white",
+                { width: "100%", fontSize: 13, marginBottom: 8 }
+              )}>
+              {emailSent ? t.emailOptSent : t.emailOptBtn}
+            </button>
             <p style={{ fontSize: 11, color: "#9ab", lineHeight: 1.55, margin: 0 }}>
               🔒 {t.emailOptHint}
             </p>
