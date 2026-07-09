@@ -2,7 +2,7 @@
 
 **A psychometric instrument for the visual assessment of gender identity and sexual orientation**
 
-Developed by the [ENDOSEX Research Group](https://endosex.it) · Università degli Studi di Roma Tor Vergata
+Developed by the [ENDOSEX Research Group](https://sessuologiamedica.com) · Università degli Studi di Roma Tor Vergata
 Principal Investigator: Prof. Emmanuele A. Jannini
 
 ---
