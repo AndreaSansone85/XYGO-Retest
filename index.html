@@ -69,6 +69,12 @@ function petalPath(cx, cy, tx, ty, w) {
 const L = {
   en: {
     roseTitle:"XYGO", roseSub:"WIND ROSE",
+    protocolA:"You have been invited to the ",
+    protocolB:"XYGO validation protocol",
+    protocolC:", the psychometric test for measuring sexual identity. After the first session, you are invited to complete the test again after ",
+    protocolD:"10–14 days",
+    protocolE:". If you wish, on the final screen you will be able to enter your email address to receive a reminder message.",
+    protocolNotice:"⏳ Please wait at least 10 days before starting the second session.",
     p1a:"Please identify yourself according to your ",
     p1b:"assigned sex at birth",
     p1c:", and rate your ",
@@ -154,6 +160,12 @@ const L = {
   },
   it: {
     roseTitle:"XYGO", roseSub:"ROSA DEI VENTI",
+    protocolA:"Sei stata/o invitata/o al protocollo di validazione di ",
+    protocolB:"XYGO",
+    protocolC:", il test psicometrico per la misurazione dell\u2019identit\u00e0 sessuale. Dopo la prima compilazione, sei invitata/o a compilare nuovamente il test dopo ",
+    protocolD:"10/14 giorni",
+    protocolE:". Se vorrai, nell\u2019ultima schermata potrai inserire il tuo indirizzo email per ricevere un messaggio di promemoria.",
+    protocolNotice:"\u23f3 Attendi almeno 10 giorni prima di iniziare la seconda compilazione.",
     p1a:"Per favore identificati in base al tuo ",
     p1b:"sesso assegnato alla nascita",
     p1c:", e valuta la tua ",
@@ -784,15 +796,45 @@ function App() {
     const canBegin = consent && timepoint && (timepoint === "T1" || participantToken.trim().length >= 4);
     return (
       <div style={wrap}>
-        <LangToggle/>
         <div style={card}>
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ textAlign: "center", marginBottom: 14 }}>
             <div style={{ fontSize: 48, lineHeight: 1, marginBottom: 8 }}>🌹</div>
             <h1 style={{ fontFamily: "'DM Serif Display', serif", color: TD, fontSize: 34, letterSpacing: 3, marginBottom: 2 }}>
               {t.roseTitle}
             </h1>
             <div style={{ color: TL, fontSize: 12, fontWeight: "600", letterSpacing: 5 }}>{t.roseSub}</div>
           </div>
+
+          {/* Selettore lingua — sotto titolo e sottotitolo */}
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+            {["en","it"].map(l => (
+              <button key={l} onClick={() => setLang(l)} style={{
+                background: lang === l ? TD : "transparent",
+                color: lang === l ? "white" : "#9ab",
+                border: `1.5px solid ${lang === l ? TD : "#d4e8e7"}`,
+                borderRadius: 7, padding: "4px 13px", marginLeft: 6, marginRight: 6,
+                fontSize: 11, fontWeight: "700", cursor: "pointer",
+                fontFamily: "'DM Sans', sans-serif", letterSpacing: 1
+              }}>{l.toUpperCase()}</button>
+            ))}
+          </div>
+
+          {/* Protocollo di validazione */}
+          <p style={{ color: "#4a6665", lineHeight: 1.7, fontSize: 14, marginBottom: 10 }}>
+            {t.protocolA}<strong style={{ color: TD }}>{t.protocolB}</strong>
+            {t.protocolC}<strong style={{ color: TD }}>{t.protocolD}</strong>{t.protocolE}
+          </p>
+
+          {/* Box avviso — gap temporale ben visibile */}
+          <div style={{
+            background: "#fff8e7", border: "1.5px solid #f5c842", borderRadius: 10,
+            padding: "10px 14px", marginBottom: 20
+          }}>
+            <p style={{ fontSize: 12.5, color: "#9a7a1a", fontWeight: "600", margin: 0, lineHeight: 1.5 }}>
+              {t.protocolNotice}
+            </p>
+          </div>
+
           <p style={{ color: "#4a6665", lineHeight: 1.7, fontSize: 14, marginBottom: 10 }}>
             {t.p1a}<strong style={{ color: "#333" }}>{t.p1b}</strong>
             {t.p1c}<strong style={{ color: TD }}>{t.p1d}</strong>
